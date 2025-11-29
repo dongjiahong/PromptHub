@@ -1,0 +1,63 @@
+# 重新包含被父级 gitignore 忽略的文件
+!*.json
+!*.yaml
+!*.yml
+!*.ts
+!*.tsx
+!*.js
+!*.jsx
+!*.css
+!*.svg
+
+# Node.js
+node_modules/
+.pnpm-store/
+
+# Build output
+out/
+dist/
+build/
+
+# Electron
+release/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Database (开发时的本地数据库)
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary
+*.tmp
+*.temp
+
+# 内部文档
+文档/

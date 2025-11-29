@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 主题色变量 - 莫兰迪色系 */
+    --theme-hue: 210;
+    --theme-saturation: 35;
+    --base-font-size: 16px;
+    
+    /* 浅色模式配色 */
+    --background: 220 14% 96%;
+    --foreground: 220 20% 25%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 25%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 25%;
+    
+    /* 莫兰迪主题色 - 柔和淡雅 */
+    --primary: var(--theme-hue) var(--theme-saturation) 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 20% 25%;
+    --muted: 220 14% 94%;
+    --muted-foreground: 220 12% 50%;
+    --accent: var(--theme-hue) calc(var(--theme-saturation) * 0.5) 94%;
+    --accent-foreground: var(--theme-hue) var(--theme-saturation) 40%;
+    --destructive: 0 45% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 90%;
+    --input: 220 13% 90%;
+    --ring: var(--theme-hue) var(--theme-saturation) 55%;
+    --radius: 0.75rem;
+    
+    /* 侧边栏 - 浅色模式 */
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 220 20% 25%;
+    --sidebar-accent: 220 14% 95%;
+    --sidebar-border: 220 13% 90%;
+    
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark {
+    /* 深色模式配色 */
+    --background: 220 20% 12%;
+    --foreground: 220 15% 90%;
+    --card: 220 18% 15%;
+    --card-foreground: 220 15% 90%;
+    --popover: 220 18% 15%;
+    --popover-foreground: 220 15% 90%;
+    
+    /* 莫兰迪主题色 - 深色模式稍亮 */
+    --primary: var(--theme-hue) calc(var(--theme-saturation) + 10%) 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 18%;
+    --secondary-foreground: 220 15% 90%;
+    --muted: 220 15% 18%;
+    --muted-foreground: 220 12% 55%;
+    --accent: var(--theme-hue) calc(var(--theme-saturation) * 0.4) 22%;
+    --accent-foreground: var(--theme-hue) calc(var(--theme-saturation) + 10%) 70%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: var(--theme-hue) calc(var(--theme-saturation) + 10%) 60%;
+    
+    /* 侧边栏 - 深色模式 */
+    --sidebar: 220 20% 10%;
+    --sidebar-foreground: 220 15% 90%;
+    --sidebar-accent: 220 18% 15%;
+    --sidebar-border: 220 15% 18%;
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    font-size: var(--base-font-size, 16px);
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/40;
+}
+
+/* macOS 风格标题栏拖拽区域 */
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* iOS 风格动画 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out;
+}
+
+/* 选中文本颜色 */
+::selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary));
+}
+
+/* 平滑字体渲染 */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 禁用文本选择（用于按钮等） */
+.select-none {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 玻璃态效果 */
+.glass {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}

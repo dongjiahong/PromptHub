@@ -1,0 +1,99 @@
+import { SearchIcon, PlusIcon, SettingsIcon, SunIcon, MoonIcon } from 'lucide-react';
+import { usePromptStore } from '../../stores/prompt.store';
+import { useSettingsStore } from '../../stores/settings.store';
+import { useState } from 'react';
+import { CreatePromptModal } from '../prompt/CreatePromptModal';
+
+interface TopBarProps {
+  onOpenSettings: () => void;
+}
+
+export function TopBar({ onOpenSettings }: TopBarProps) {
+  const searchQuery = usePromptStore((state) => state.searchQuery);
+  const setSearchQuery = usePromptStore((state) => state.setSearchQuery);
+  const createPrompt = usePromptStore((state) => state.createPrompt);
+  const isDarkMode = useSettingsStore((state) => state.isDarkMode);
+  const setDarkMode = useSettingsStore((state) => state.setDarkMode);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const handleCreatePrompt = async (data: {
+    title: string;
+    description?: string;
+    systemPrompt?: string;
+    userPrompt: string;
+    tags: string[];
+  }) => {
+    try {
+      await createPrompt({
+        title: data.title,
+        description: data.description,
+        systemPrompt: data.systemPrompt,
+        userPrompt: data.userPrompt,
+        tags: data.tags,
+        variables: [],
+      });
+      setIsCreateModalOpen(false);
+    } catch (error) {
+      console.error('Failed to create prompt:', error);
+    }
+  };
+
+  const toggleTheme = () => {
+    setDarkMode(!isDarkMode);
+  };
+
+  return (
+    <>
+      <header className="h-12 bg-card border-b border-border flex items-center px-4 shrink-0">
+        {/* 搜索框 - 居中 */}
+        <div className="flex-1 flex justify-center">
+          <div className="w-full max-w-lg relative">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="搜索 Prompt..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-9 pl-9 pr-4 rounded-lg bg-muted/50 border-0 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+            />
+          </div>
+        </div>
+
+        {/* 右侧操作按钮 */}
+        <div className="flex items-center gap-1 ml-4">
+          {/* 新建按钮 */}
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-1.5 h-8 px-3 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <PlusIcon className="w-4 h-4" />
+            <span>新建</span>
+          </button>
+
+          {/* 主题切换 */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            {isDarkMode ? <SunIcon className="w-4 h-4" /> : <MoonIcon className="w-4 h-4" />}
+          </button>
+
+          {/* 设置按钮 */}
+          <button
+            onClick={onOpenSettings}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <SettingsIcon className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* 新建 Prompt 弹窗 */}
+      <CreatePromptModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreate={handleCreatePrompt}
+      />
+    </>
+  );
+}

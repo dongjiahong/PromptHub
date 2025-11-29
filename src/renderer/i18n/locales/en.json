@@ -1,0 +1,78 @@
+{
+  "app": {
+    "name": "PromptHub",
+    "description": "Local Prompt Manager with Version Control"
+  },
+  "nav": {
+    "allPrompts": "All Prompts",
+    "favorites": "Favorites",
+    "folders": "Folders",
+    "tags": "Tags",
+    "resources": "Resources"
+  },
+  "header": {
+    "search": "Search Prompts...",
+    "new": "New",
+    "settings": "Settings"
+  },
+  "prompt": {
+    "title": "Title",
+    "description": "Description",
+    "systemPrompt": "System Prompt",
+    "userPrompt": "User Prompt",
+    "tags": "Tags",
+    "variables": "Variables",
+    "preview": "Preview",
+    "copy": "Copy",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "create": "Create",
+    "noPrompts": "No prompts yet",
+    "addFirst": "Create your first prompt",
+    "variableHint": "Use {{variableName}} to define variables"
+  },
+  "folder": {
+    "new": "New Folder",
+    "rename": "Rename",
+    "delete": "Delete",
+    "empty": "No folders"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "language": "Language",
+    "data": "Data",
+    "autoSave": "Auto Save",
+    "export": "Export Data",
+    "import": "Import Data",
+    "clear": "Clear Data",
+    "about": "About",
+    "version": "Version"
+  },
+  "resources": {
+    "title": "Recommended Resources",
+    "promptGuides": "Prompt Engineering Guides",
+    "templates": "Prompt Templates",
+    "tools": "AI Development Tools",
+    "models": "AI Model Services"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "optional": "Optional"
+  }
+}
