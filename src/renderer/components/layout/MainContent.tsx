@@ -73,6 +73,8 @@ export function MainContent() {
   const [compareResults, setCompareResults] = useState<AITestResult[] | null>(null);
   const [compareError, setCompareError] = useState<string | null>(null);
   const [isVariableModalOpen, setIsVariableModalOpen] = useState(false);
+  const [isAiTestVariableModalOpen, setIsAiTestVariableModalOpen] = useState(false);
+  const [isCompareVariableModalOpen, setIsCompareVariableModalOpen] = useState(false);
   const { showToast } = useToast();
 
   // 切换 Prompt 时清除对比结果
@@ -98,6 +100,54 @@ export function MainContent() {
         userPrompt: version.userPrompt,
       });
       showToast(t('toast.restored'), 'success');
+    }
+  };
+
+  // AI 测试函数（支持变量替换后的 prompt）
+  const runAiTest = async (systemPrompt: string | undefined, userPrompt: string) => {
+    setShowAiPanel(true);
+    setIsTestingAI(true);
+    setAiResponse(null);
+    setIsAiTestVariableModalOpen(false);
+    try {
+      const messages = buildMessagesFromPrompt(systemPrompt, userPrompt);
+      const response = await chatCompletion(
+        { provider: aiProvider, apiKey: aiApiKey, apiUrl: aiApiUrl, model: aiModel },
+        messages
+      );
+      setAiResponse(response);
+    } catch (error) {
+      setAiResponse(`${t('common.error')}: ${error instanceof Error ? error.message : t('common.error')}`);
+      showToast(t('toast.aiFailed'), 'error');
+    } finally {
+      setIsTestingAI(false);
+    }
+  };
+
+  // 多模型对比函数（支持变量替换后的 prompt）
+  const runModelCompare = async (systemPrompt: string | undefined, userPrompt: string) => {
+    setIsCompareVariableModalOpen(false);
+    const selectedConfigs = aiModels
+      .filter((m) => selectedModelIds.includes(m.id))
+      .map((m) => ({
+        provider: m.provider,
+        apiKey: m.apiKey,
+        apiUrl: m.apiUrl,
+        model: m.model,
+      }));
+
+    const messages = buildMessagesFromPrompt(systemPrompt, userPrompt);
+
+    setIsComparingModels(true);
+    setCompareResults(null);
+    setCompareError(null);
+    try {
+      const result = await multiModelCompare(selectedConfigs, messages);
+      setCompareResults(result.results);
+    } catch (error) {
+      setCompareError(error instanceof Error ? error.message : t('common.error'));
+    } finally {
+      setIsComparingModels(false);
     }
   };
 
@@ -292,37 +342,22 @@ export function MainContent() {
                     </button>
                   )}
                   <button
-                    onClick={async () => {
+                    onClick={() => {
                       if (selectedModelIds.length < 2) {
                         showToast(t('prompt.selectAtLeast2'), 'error');
                         return;
                       }
                       if (!selectedPrompt) return;
 
-                      const selectedConfigs = aiModels
-                        .filter((m) => selectedModelIds.includes(m.id))
-                        .map((m) => ({
-                          provider: m.provider,
-                          apiKey: m.apiKey,
-                          apiUrl: m.apiUrl,
-                          model: m.model,
-                        }));
-
-                      const messages = buildMessagesFromPrompt(
-                        selectedPrompt.systemPrompt,
-                        selectedPrompt.userPrompt
-                      );
-
-                      setIsComparingModels(true);
-                      setCompareResults(null);
-                      setCompareError(null);
-                      try {
-                        const result = await multiModelCompare(selectedConfigs, messages);
-                        setCompareResults(result.results);
-                      } catch (error) {
-                        setCompareError(error instanceof Error ? error.message : t('common.error'));
-                      } finally {
-                        setIsComparingModels(false);
+                      // 检查是否有变量
+                      const variableRegex = /\{\{([^}]+)\}\}/g;
+                      const hasVariables = variableRegex.test(selectedPrompt.userPrompt) || 
+                        (selectedPrompt.systemPrompt && variableRegex.test(selectedPrompt.systemPrompt));
+                      
+                      if (hasVariables) {
+                        setIsCompareVariableModalOpen(true);
+                      } else {
+                        runModelCompare(selectedPrompt.systemPrompt, selectedPrompt.userPrompt);
                       }
                     }}
                     disabled={isComparingModels || selectedModelIds.length < 2}
@@ -398,36 +433,28 @@ export function MainContent() {
                 <span>{copied ? t('prompt.copied') : t('prompt.copy')}</span>
               </button>
               <button 
-                onClick={async () => {
+                onClick={() => {
                   if (!aiApiKey) {
                     showToast(t('toast.configAI'), 'error');
                     return;
                   }
-                  setShowAiPanel(true);
-                  setIsTestingAI(true);
-                  setAiResponse(null);
-                  try {
-                    const messages = buildMessagesFromPrompt(
-                      selectedPrompt.systemPrompt,
-                      selectedPrompt.userPrompt
-                    );
-                    const response = await chatCompletion(
-                      { provider: aiProvider, apiKey: aiApiKey, apiUrl: aiApiUrl, model: aiModel },
-                      messages
-                    );
-                    setAiResponse(response);
-                  } catch (error) {
-                    setAiResponse(`${t('common.error')}: ${error instanceof Error ? error.message : t('common.error')}`);
-                    showToast(t('toast.aiFailed'), 'error');
-                  } finally {
-                    setIsTestingAI(false);
+                  // 检查是否有变量
+                  const variableRegex = /\{\{([^}]+)\}\}/g;
+                  const hasVariables = variableRegex.test(selectedPrompt.userPrompt) || 
+                    (selectedPrompt.systemPrompt && variableRegex.test(selectedPrompt.systemPrompt));
+                  
+                  if (hasVariables) {
+                    setIsAiTestVariableModalOpen(true);
+                  } else {
+                    // 没有变量，直接测试
+                    runAiTest(selectedPrompt.systemPrompt, selectedPrompt.userPrompt);
                   }
                 }}
                 disabled={isTestingAI}
                 className="
                   flex items-center gap-2 h-10 px-5 rounded-lg
-                  bg-green-500 text-white text-sm font-medium
-                  hover:bg-green-600 disabled:opacity-50
+                  bg-primary/90 text-white text-sm font-medium
+                  hover:bg-primary disabled:opacity-50
                   transition-colors duration-150
                 "
               >
@@ -523,19 +550,48 @@ export function MainContent() {
               onRestore={handleRestoreVersion}
             />
 
-            {/* 变量填充弹窗 */}
+            {/* 变量填充弹窗 - 复制 */}
             <VariableInputModal
               isOpen={isVariableModalOpen}
               onClose={() => setIsVariableModalOpen(false)}
               promptId={selectedPrompt.id}
               systemPrompt={selectedPrompt.systemPrompt}
               userPrompt={selectedPrompt.userPrompt}
+              mode="copy"
               onCopy={() => {
                 setCopied(true);
                 showToast(t('toast.copied'), 'success');
                 setTimeout(() => setCopied(false), 2000);
                 setIsVariableModalOpen(false);
               }}
+            />
+
+            {/* 变量填充弹窗 - AI 测试 */}
+            <VariableInputModal
+              isOpen={isAiTestVariableModalOpen}
+              onClose={() => setIsAiTestVariableModalOpen(false)}
+              promptId={selectedPrompt.id}
+              systemPrompt={selectedPrompt.systemPrompt}
+              userPrompt={selectedPrompt.userPrompt}
+              mode="aiTest"
+              onAiTest={(filledSystemPrompt, filledUserPrompt) => {
+                runAiTest(filledSystemPrompt, filledUserPrompt);
+              }}
+              isAiTesting={isTestingAI}
+            />
+
+            {/* 变量填充弹窗 - 多模型对比 */}
+            <VariableInputModal
+              isOpen={isCompareVariableModalOpen}
+              onClose={() => setIsCompareVariableModalOpen(false)}
+              promptId={selectedPrompt.id}
+              systemPrompt={selectedPrompt.systemPrompt}
+              userPrompt={selectedPrompt.userPrompt}
+              mode="aiTest"
+              onAiTest={(filledSystemPrompt, filledUserPrompt) => {
+                runModelCompare(filledSystemPrompt, filledUserPrompt);
+              }}
+              isAiTesting={isComparingModels}
             />
           </div>
         ) : (

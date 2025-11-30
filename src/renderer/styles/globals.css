@@ -54,26 +54,26 @@
     --popover: 220 18% 15%;
     --popover-foreground: 220 15% 90%;
     
-    /* 莫兰迪主题色 - 深色模式稍亮 */
-    --primary: var(--theme-hue) calc(var(--theme-saturation) + 10%) 60%;
+    /* 莫兰迪主题色 - 深色模式增强饱和度，保持适中亮度 */
+    --primary: var(--theme-hue) calc(var(--theme-saturation) + 25%) 50%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 15% 18%;
     --secondary-foreground: 220 15% 90%;
     --muted: 220 15% 18%;
     --muted-foreground: 220 12% 55%;
-    --accent: var(--theme-hue) calc(var(--theme-saturation) * 0.4) 22%;
-    --accent-foreground: var(--theme-hue) calc(var(--theme-saturation) + 10%) 70%;
-    --destructive: 0 50% 50%;
+    --accent: var(--theme-hue) calc(var(--theme-saturation) * 0.5) 22%;
+    --accent-foreground: var(--theme-hue) calc(var(--theme-saturation) + 20%) 80%;
+    --destructive: 0 60% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: var(--theme-hue) calc(var(--theme-saturation) + 10%) 60%;
+    --border: 220 15% 22%;
+    --input: 220 15% 22%;
+    --ring: var(--theme-hue) calc(var(--theme-saturation) + 25%) 50%;
     
     /* 侧边栏 - 深色模式 */
     --sidebar: 220 20% 10%;
     --sidebar-foreground: 220 15% 90%;
-    --sidebar-accent: 220 18% 15%;
-    --sidebar-border: 220 15% 18%;
+    --sidebar-accent: var(--theme-hue) calc(var(--theme-saturation) * 0.4) 20%;
+    --sidebar-border: 220 15% 20%;
     
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -84,6 +84,7 @@
 @layer base {
   * {
     @apply border-border;
+    
   }
   html {
     font-size: var(--base-font-size, 16px);

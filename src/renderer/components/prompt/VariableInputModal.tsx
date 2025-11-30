@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Modal, Button } from '../ui';
 import { useTranslation } from 'react-i18next';
-import { CopyIcon, CheckIcon, VariableIcon, HistoryIcon, CalendarIcon, ClockIcon } from 'lucide-react';
+import { CopyIcon, CheckIcon, VariableIcon, HistoryIcon, CalendarIcon, ClockIcon, PlayIcon, Loader2Icon } from 'lucide-react';
+
+type ModalMode = 'copy' | 'aiTest';
 
 interface VariableInputModalProps {
   isOpen: boolean;
@@ -9,7 +11,10 @@ interface VariableInputModalProps {
   promptId: string;
   systemPrompt?: string;
   userPrompt: string;
-  onCopy: (filledPrompt: string) => void;
+  mode?: ModalMode;
+  onCopy?: (filledPrompt: string) => void;
+  onAiTest?: (filledSystemPrompt: string | undefined, filledUserPrompt: string) => void;
+  isAiTesting?: boolean;
 }
 
 // 解析变量：支持 {{name}} 和 {{name:默认值}} 格式
@@ -58,7 +63,10 @@ export function VariableInputModal({
   promptId,
   systemPrompt,
   userPrompt,
+  mode = 'copy',
   onCopy,
+  onAiTest,
+  isAiTesting = false,
 }: VariableInputModalProps) {
   const { t } = useTranslation();
   const [variables, setVariables] = useState<Record<string, string>>({});
@@ -147,9 +155,20 @@ export function VariableInputModal({
     const result = replaceVariables(userPrompt);
     
     navigator.clipboard.writeText(result);
-    onCopy(result);
+    onCopy?.(result);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAiTest = () => {
+    // 保存变量历史
+    saveVariableHistory(promptId, variables);
+    
+    // 替换变量
+    const filledUserPrompt = replaceVariables(userPrompt);
+    const filledSystemPrompt = systemPrompt ? replaceVariables(systemPrompt) : undefined;
+    
+    onAiTest?.(filledSystemPrompt, filledUserPrompt);
   };
 
   // 如果没有变量，直接复制原文
@@ -211,23 +230,44 @@ export function VariableInputModal({
           <Button variant="secondary" onClick={onClose}>
             {t('common.cancel')}
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleCopy}
-            disabled={!allFilled}
-          >
-            {copied ? (
-              <>
-                <CheckIcon className="w-4 h-4 mr-1.5" />
-                {t('prompt.copied')}
-              </>
-            ) : (
-              <>
-                <CopyIcon className="w-4 h-4 mr-1.5" />
-                {t('prompt.copyResult')}
-              </>
-            )}
-          </Button>
+          {mode === 'copy' ? (
+            <Button
+              variant="primary"
+              onClick={handleCopy}
+              disabled={!allFilled}
+            >
+              {copied ? (
+                <>
+                  <CheckIcon className="w-4 h-4 mr-1.5" />
+                  {t('prompt.copied')}
+                </>
+              ) : (
+                <>
+                  <CopyIcon className="w-4 h-4 mr-1.5" />
+                  {t('prompt.copyResult')}
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              onClick={handleAiTest}
+              disabled={!allFilled || isAiTesting}
+              className="bg-green-500 hover:bg-green-600"
+            >
+              {isAiTesting ? (
+                <>
+                  <Loader2Icon className="w-4 h-4 mr-1.5 animate-spin" />
+                  {t('prompt.testing')}
+                </>
+              ) : (
+                <>
+                  <PlayIcon className="w-4 h-4 mr-1.5" />
+                  {t('prompt.aiTest')}
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </Modal>

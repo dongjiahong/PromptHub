@@ -181,7 +181,7 @@ PromptHub/
 
 ## 🗺️ Roadmap
 
-### v0.1.5 (Current)
+### v0.1.7 (Current)
 - [x] Prompt CRUD management
 - [x] Folder and tag system
 - [x] Favorites feature
@@ -197,13 +197,33 @@ PromptHub/
 - [x] Multi-model configuration (unlimited)
 - [x] Full i18n support (homepage, editor, modals)
 - [x] In-app auto update
-- [x] Variable fill-in interface
+- [x] Variable fill-in interface (copy & AI test)
 
 ### Future Plans
+- [ ] Web version (Docker/Cloudflare deployment)
+- [ ] Multiple view modes (list/card/table)
+- [ ] Advanced filtering & sorting
 - [ ] Prompt template marketplace
 - [ ] Browser extension
 
 ## 📝 Changelog
+
+### v0.1.7 (2025-11-30)
+**New Features**
+- ✨ AI test now supports variable fill-in (same experience as copy)
+- ✨ Multi-model comparison supports variable fill-in
+
+**Improvements**
+- 🎨 Enhanced dark mode theme colors (better saturation and visibility)
+- 🎨 Improved toggle switch dark mode styling (added border and better contrast)
+- 🎨 AI test button now uses theme color
+- 🎨 Beautified About page icon
+- 🔧 Removed "Refresh Now" button from language settings (instant effect)
+
+### v0.1.6 (2025-11-30)
+**Improvements**
+- 🔧 Fixed auto-update metadata file missing (CI uploads latest-mac.yml)
+- 🔧 Optimized Release notes format
 
 ### v0.1.5 (2025-11-30)
 **New Features**

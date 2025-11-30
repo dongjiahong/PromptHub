@@ -70,6 +70,7 @@ jobs:
             dist/*.dmg
             dist/*-x64.exe
             dist/*-arm64.exe
+            dist/*.yml
           if-no-files-found: ignore
 
   release:
@@ -95,11 +96,13 @@ jobs:
           body: |
             ## 📦 下载安装
             
-            | 平台 | 芯片 | 下载 |
-            |------|------|------|
-            | macOS | Intel 芯片 | `PromptHub-${{ github.ref_name }}-x64.dmg` |
-            | macOS | M 系列芯片 | `PromptHub-${{ github.ref_name }}-arm64.dmg` |
-            | Windows | x64 | `PromptHub-Setup-${{ github.ref_name }}-x64.exe` |
+            | 平台 | 芯片 | 下载文件示例 |
+            |------|------|--------------|
+            | macOS | Intel 芯片 | `PromptHub-x.x.x-x64.dmg` |
+            | macOS | M 系列芯片 | `PromptHub-x.x.x-arm64.dmg` |
+            | Windows | x64 | `PromptHub-Setup-x.x.x-x64.exe` |
+            
+            > 💡 实际文件名中的 `x.x.x` 会是本次发布的版本号，例如 `0.1.6`。
             
             ### ⚠️ macOS 首次启动
             如果提示"无法打开"或"已损坏"，请在终端执行：

@@ -29,6 +29,7 @@ import {
   MailIcon,
   HeartIcon,
   ExternalLinkIcon,
+  SparklesIcon,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { downloadBackup, restoreFromFile, clearDatabase } from '../../services/database';
@@ -1054,15 +1055,6 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                 />
               </SettingItem>
             </SettingSection>
-            <div className="p-4 rounded-lg bg-muted/50 text-sm text-muted-foreground flex items-center justify-between">
-              <span>{t('settings.languageChangeHint')}</span>
-              <button
-                onClick={() => window.location.reload()}
-                className="h-8 px-3 rounded-lg bg-primary text-white text-sm hover:bg-primary/90 transition-colors"
-              >
-                {t('settings.refreshNow')}
-              </button>
-            </div>
           </div>
         );
 
@@ -1106,11 +1098,11 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
           <div className="space-y-6">
             {/* 应用信息卡片 */}
             <div className="text-center py-6">
-              <div className="w-14 h-14 mx-auto mb-3 rounded-xl bg-primary flex items-center justify-center">
-                <span className="text-white text-xl font-bold">P</span>
+              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg">
+                <SparklesIcon className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-lg font-semibold">PromptHub</h2>
-              <p className="text-sm text-muted-foreground mt-1">{t('settings.version')} 0.1.5</p>
+              <p className="text-sm text-muted-foreground mt-1">{t('settings.version')} 0.1.7</p>
             </div>
 
             <SettingSection title={t('settings.projectInfo')}>
@@ -1128,7 +1120,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                   onChange={settings.setAutoCheckUpdate}
                 />
               </SettingItem>
-              <SettingItem label={t('settings.checkUpdate')} description={`${t('settings.version')}: 0.1.4`}>
+              <SettingItem label={t('settings.checkUpdate')} description={`${t('settings.version')}: 0.1.7`}>
                 <button
                   onClick={() => setShowUpdateDialog(true)}
                   className="h-8 px-4 rounded-lg bg-primary text-white text-sm hover:bg-primary/90 transition-colors"
@@ -1307,16 +1299,17 @@ function ToggleSwitch({ checked, onChange, defaultChecked = false }: ToggleSwitc
   return (
     <button
       onClick={handleClick}
-      className={`relative w-12 h-7 rounded-full transition-all duration-200 flex-shrink-0 ${
+      className={`relative w-12 h-7 rounded-full transition-all duration-200 flex-shrink-0 border-2 ${
         isChecked 
-          ? 'bg-primary' 
-          : 'bg-gray-300 dark:bg-gray-600'
+          ? 'bg-primary border-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]' 
+          : 'bg-muted/50 border-muted-foreground/40 dark:bg-muted dark:border-muted-foreground/50'
       }`}
     >
       <span
-        className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow-md transition-all duration-200 ${
-          isChecked ? 'left-6' : 'left-1'
+        className={`absolute top-0.5 w-5 h-5 rounded-full shadow-md transition-all duration-200 ${
+          isChecked ? 'left-5.5 bg-white' : 'left-0.5 bg-muted-foreground/60 dark:bg-foreground/70'
         }`}
+        style={{ left: isChecked ? '22px' : '2px' }}
       />
     </button>
   );
