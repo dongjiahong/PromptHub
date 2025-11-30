@@ -59,7 +59,7 @@ export function MainContent() {
   const deletePrompt = usePromptStore((state) => state.deletePrompt);
   const updatePrompt = usePromptStore((state) => state.updatePrompt);
   const searchQuery = usePromptStore((state) => state.searchQuery);
-  const filterTag = usePromptStore((state) => state.filterTag);
+  const filterTags = usePromptStore((state) => state.filterTags);
   const selectedFolderId = useFolderStore((state) => state.selectedFolderId);
   
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -170,9 +170,11 @@ export function MainContent() {
     );
   }
 
-  // 标签筛选
-  if (filterTag) {
-    filteredPrompts = filteredPrompts.filter((p) => p.tags.includes(filterTag));
+  // 标签筛选（多选：必须包含所有选中的标签）
+  if (filterTags.length > 0) {
+    filteredPrompts = filteredPrompts.filter((p) => 
+      filterTags.every(tag => p.tags.includes(tag))
+    );
   }
 
   const selectedPrompt = prompts.find((p) => p.id === selectedId);

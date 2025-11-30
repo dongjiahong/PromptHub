@@ -1301,13 +1301,13 @@ function ToggleSwitch({ checked, onChange, defaultChecked = false }: ToggleSwitc
       onClick={handleClick}
       className={`relative w-12 h-7 rounded-full transition-all duration-200 flex-shrink-0 border-2 ${
         isChecked 
-          ? 'bg-primary border-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]' 
-          : 'bg-muted/50 border-muted-foreground/40 dark:bg-muted dark:border-muted-foreground/50'
+          ? 'bg-primary border-primary' 
+          : 'bg-muted border-border dark:bg-primary/20 dark:border-primary/40'
       }`}
     >
       <span
-        className={`absolute top-0.5 w-5 h-5 rounded-full shadow-md transition-all duration-200 ${
-          isChecked ? 'left-5.5 bg-white' : 'left-0.5 bg-muted-foreground/60 dark:bg-foreground/70'
+        className={`absolute top-0.5 w-5 h-5 rounded-full transition-all duration-200 ${
+          isChecked ? 'bg-white' : 'bg-muted-foreground/50 dark:bg-primary/60'
         }`}
         style={{ left: isChecked ? '22px' : '2px' }}
       />

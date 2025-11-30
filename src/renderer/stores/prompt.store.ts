@@ -7,7 +7,7 @@ interface PromptState {
   selectedId: string | null;
   isLoading: boolean;
   searchQuery: string;
-  filterTag: string | null;
+  filterTags: string[];
 
   // Actions
   fetchPrompts: () => Promise<void>;
@@ -16,7 +16,8 @@ interface PromptState {
   deletePrompt: (id: string) => Promise<void>;
   selectPrompt: (id: string | null) => void;
   setSearchQuery: (query: string) => void;
-  setFilterTag: (tag: string | null) => void;
+  toggleFilterTag: (tag: string) => void;
+  clearFilterTags: () => void;
   toggleFavorite: (id: string) => Promise<void>;
 }
 
@@ -25,7 +26,7 @@ export const usePromptStore = create<PromptState>((set, get) => ({
   selectedId: null,
   isLoading: false,
   searchQuery: '',
-  filterTag: null,
+  filterTags: [],
 
   fetchPrompts: async () => {
     set({ isLoading: true });
@@ -92,7 +93,13 @@ export const usePromptStore = create<PromptState>((set, get) => ({
 
   setSearchQuery: (query) => set({ searchQuery: query }),
 
-  setFilterTag: (tag) => set({ filterTag: tag }),
+  toggleFilterTag: (tag) => set((state) => ({
+    filterTags: state.filterTags.includes(tag)
+      ? state.filterTags.filter(t => t !== tag)
+      : [...state.filterTags, tag]
+  })),
+
+  clearFilterTags: () => set({ filterTags: [] }),
 
   toggleFavorite: async (id) => {
     const prompt = get().prompts.find((p) => p.id === id);

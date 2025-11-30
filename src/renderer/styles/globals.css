@@ -54,25 +54,25 @@
     --popover: 220 18% 15%;
     --popover-foreground: 220 15% 90%;
     
-    /* 莫兰迪主题色 - 深色模式增强饱和度，保持适中亮度 */
-    --primary: var(--theme-hue) calc(var(--theme-saturation) + 25%) 50%;
+    /* 莫兰迪主题色 - 深色模式跟随用户选择的主题色 */
+    --primary: var(--theme-hue) var(--theme-saturation) 50%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 15% 18%;
     --secondary-foreground: 220 15% 90%;
     --muted: 220 15% 18%;
     --muted-foreground: 220 12% 55%;
-    --accent: var(--theme-hue) calc(var(--theme-saturation) * 0.5) 22%;
-    --accent-foreground: var(--theme-hue) calc(var(--theme-saturation) + 20%) 80%;
+    --accent: var(--theme-hue) 15% 22%;
+    --accent-foreground: var(--theme-hue) var(--theme-saturation) 75%;
     --destructive: 0 60% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 15% 22%;
     --input: 220 15% 22%;
-    --ring: var(--theme-hue) calc(var(--theme-saturation) + 25%) 50%;
+    --ring: var(--theme-hue) var(--theme-saturation) 50%;
     
     /* 侧边栏 - 深色模式 */
     --sidebar: 220 20% 10%;
     --sidebar-foreground: 220 15% 90%;
-    --sidebar-accent: var(--theme-hue) calc(var(--theme-saturation) * 0.4) 20%;
+    --sidebar-accent: var(--theme-hue) 15% 20%;
     --sidebar-border: 220 15% 20%;
     
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);

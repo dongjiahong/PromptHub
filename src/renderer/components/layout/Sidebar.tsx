@@ -153,8 +153,8 @@ export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
   const [isMac, setIsMac] = useState(false);
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [editingFolder, setEditingFolder] = useState<Folder | null>(null);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const setFilterTag = usePromptStore((state) => state.setFilterTag);
+  const filterTags = usePromptStore((state) => state.filterTags);
+  const toggleFilterTag = usePromptStore((state) => state.toggleFilterTag);
 
   // 拖拽传感器
   const sensors = useSensors(
@@ -289,13 +289,11 @@ export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                 <button
                   key={tag}
                   onClick={() => {
-                    const newTag = selectedTag === tag ? null : tag;
-                    setSelectedTag(newTag);
-                    setFilterTag(newTag);
+                    toggleFilterTag(tag);
                     if (currentPage !== 'home') onNavigate('home');
                   }}
                   className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
-                    selectedTag === tag && currentPage === 'home'
+                    filterTags.includes(tag) && currentPage === 'home'
                       ? 'bg-primary text-white'
                       : 'bg-sidebar-accent text-sidebar-foreground/70 hover:bg-primary hover:text-white'
                   }`}

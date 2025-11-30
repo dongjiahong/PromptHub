@@ -2,6 +2,18 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n, { changeLanguage } from '../i18n';
 
+// 获取默认数据目录路径（根据平台）
+const getDefaultDataPath = (): string => {
+  const platform = navigator.userAgent.toLowerCase();
+  if (platform.includes('win')) {
+    return '%APPDATA%/PromptHub';
+  } else if (platform.includes('mac')) {
+    return '~/Library/Application Support/PromptHub';
+  } else {
+    return '~/.config/PromptHub';
+  }
+};
+
 // 主题色 - 莫兰迪色系 + 经典宝蓝
 export const MORANDI_THEMES = [
   { id: 'royal-blue', hue: 220, saturation: 70, name: '宝蓝' },
@@ -131,7 +143,7 @@ export const useSettingsStore = create<SettingsState>()(
       showCopyNotification: true,
       showSaveNotification: true,
       language: (i18n.language === 'en' ? 'en' : 'zh') as 'zh' | 'en',
-      dataPath: '~/Library/Application Support/PromptHub',
+      dataPath: getDefaultDataPath(),
       webdavEnabled: false,
       webdavUrl: '',
       webdavUsername: '',
