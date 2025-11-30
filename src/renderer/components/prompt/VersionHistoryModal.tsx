@@ -183,10 +183,26 @@ export function VersionHistoryModal({ isOpen, onClose, prompt, onRestore }: Vers
     setShowDiff(false);
     setCompareVersion(null);
     try {
-      const data = await getPromptVersions(prompt.id);
-      setVersions(data);
-      if (data.length > 0) {
-        setSelectedVersion(data[0]);
+      const historyVersions = await getPromptVersions(prompt.id);
+      
+      // 将当前版本也加入列表（作为最新版本）
+      const currentVersion: PromptVersion = {
+        id: 'current',
+        promptId: prompt.id,
+        version: prompt.version,
+        systemPrompt: prompt.systemPrompt,
+        userPrompt: prompt.userPrompt,
+        variables: prompt.variables || [],
+        note: '当前版本',
+        createdAt: prompt.updatedAt,
+      };
+      
+      // 合并当前版本和历史版本，按版本号降序排列
+      const allVersions = [currentVersion, ...historyVersions.filter(v => v.version !== prompt.version)];
+      
+      setVersions(allVersions);
+      if (allVersions.length > 0) {
+        setSelectedVersion(allVersions[0]);
       }
     } catch (error) {
       console.error('Failed to load versions:', error);

@@ -1,20 +1,35 @@
 <div align="center">
-  <h1>PromptHub · AI Prompt Manager</h1>
-  <p>An open-source, local-first AI Prompt management tool for efficient prompt organization, version control, and reuse.</p>
+  <img src="./imgs/icon.png" alt="PromptHub Logo" width="120" height="120" />
+  <h1>PromptHub</h1>
+  <p><strong>🚀 Open-Source, Local-First AI Prompt Manager</strong></p>
+  <p>Efficient management, version control, variable filling, multi-model testing — All-in-one Prompt workflow</p>
+  
   <p>
-    <a href="https://github.com/legeling/PromptHub/stargazers"><img src="https://img.shields.io/github/stars/legeling/PromptHub?style=flat-square" alt="GitHub Stars"/></a>
+    <a href="https://github.com/legeling/PromptHub/stargazers"><img src="https://img.shields.io/github/stars/legeling/PromptHub?style=flat-square&color=yellow" alt="GitHub Stars"/></a>
     <a href="https://github.com/legeling/PromptHub/network/members"><img src="https://img.shields.io/github/forks/legeling/PromptHub?style=flat-square" alt="GitHub Forks"/></a>
+    <a href="https://github.com/legeling/PromptHub/releases"><img src="https://img.shields.io/github/v/release/legeling/PromptHub?style=flat-square&color=green" alt="Release"/></a>
+    <a href="https://github.com/legeling/PromptHub/releases"><img src="https://img.shields.io/github/downloads/legeling/PromptHub/total?style=flat-square&color=blue" alt="Downloads"/></a>
+    <img src="https://img.shields.io/github/license/legeling/PromptHub?style=flat-square" alt="License"/>
+  </p>
+  
+  <p>
     <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"/>
     <img src="https://img.shields.io/badge/Electron-33-47848F?style=flat-square&logo=electron&logoColor=white" alt="Electron"/>
     <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React"/>
-    <img src="https://img.shields.io/github/license/legeling/PromptHub?style=flat-square" alt="License"/>
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="TailwindCSS"/>
+  </p>
+  
+  <p>
+    <a href="../README.md">简体中文</a> ·
+    <a href="./README.en.md">English</a>
   </p>
 </div>
 
-<p align="center">
-  <a href="../README.md">简体中文</a> ·
-  <a href="./README.en.md">English</a>
-</p>
+<br/>
+
+> 💡 **Why PromptHub?**
+> 
+> Tired of searching for prompts in notebooks, documents, and chat histories? PromptHub lets you manage prompts like code — version control, variable templates, multi-model testing, all local and privacy-first.
 
 ---
 
@@ -34,7 +49,20 @@
 ## 📸 Screenshots
 
 <div align="center">
+  <p><strong>Main Interface</strong></p>
   <img src="./imgs/image.png" width="80%" alt="Main Interface"/>
+  <br/><br/>
+  <p><strong>Theme Settings</strong></p>
+  <img src="./imgs/theme.png" width="80%" alt="Theme Settings"/>
+  <br/><br/>
+  <p><strong>Data Backup</strong></p>
+  <img src="./imgs/data.png" width="80%" alt="Data Backup"/>
+  <br/><br/>
+  <p><strong>AI Model Configuration</strong></p>
+  <img src="./imgs/model.png" width="80%" alt="AI Model Configuration"/>
+  <br/><br/>
+  <p><strong>Version Comparison</strong></p>
+  <img src="./imgs/version-compare.png" width="80%" alt="Version Comparison"/>
 </div>
 
 ## 📦 Installation
@@ -45,8 +73,27 @@ Download the installer for your platform from [Releases](https://github.com/lege
 
 | Platform | Download |
 |----------|----------|
-| macOS | `PromptHub-x.x.x.dmg` |
-| Windows | `PromptHub-x.x.x-setup.exe` |
+| macOS (Intel) | `PromptHub-x.x.x-x64.dmg` |
+| macOS (Apple Silicon) | `PromptHub-x.x.x-arm64.dmg` |
+| Windows | `PromptHub-x.x.x-Setup-x64.exe` |
+
+### macOS First Launch
+
+Since the app is not notarized by Apple, you may see **"PromptHub is damaged and can't be opened"** or **"Cannot verify developer"** on first launch.
+
+**Solution (Recommended)**: Open Terminal and run the following command to bypass Gatekeeper:
+
+```bash
+sudo xattr -rd com.apple.quarantine /Applications/PromptHub.app
+```
+
+> 💡 **Tip**: If the app is installed elsewhere, replace the path with the actual installation path.
+
+**Or**: Open "System Settings" → "Privacy & Security" → scroll down to Security section → click "Open Anyway".
+
+<div align="center">
+  <img src="./imgs/install.png" width="60%" alt="macOS Installation"/>
+</div>
 
 ### Build from Source
 
@@ -134,7 +181,7 @@ PromptHub/
 
 ## 🗺️ Roadmap
 
-### v0.1.3 (Current)
+### v0.1.5 (Current)
 - [x] Prompt CRUD management
 - [x] Folder and tag system
 - [x] Favorites feature
@@ -147,14 +194,43 @@ PromptHub/
 - [x] Folder drag & drop sorting
 - [x] AI model configuration (18+ providers)
 - [x] AI connection test & model comparison
+- [x] Multi-model configuration (unlimited)
+- [x] Full i18n support (homepage, editor, modals)
+- [x] In-app auto update
+- [x] Variable fill-in interface
 
 ### Future Plans
-- [ ] Variable fill-in interface
 - [ ] Prompt template marketplace
 - [ ] Browser extension
-- [ ] Auto update
 
 ## 📝 Changelog
+
+### v0.1.5 (2025-11-30)
+**New Features**
+- ✨ Variable fill-in interface (auto-detect variables on copy, show fill-in dialog)
+
+**Improvements**
+- 🎨 Folder select dropdown now uses custom styled component
+- 🎨 Wider Edit/Create Prompt modal
+- 🔧 Fixed version comparison (current version added to version list)
+- 🔧 Disabled DevTools in production
+
+### v0.1.4 (2025-11-30)
+**New Features**
+- ✨ Multi-model configuration (unlimited AI models)
+- ✨ Model comparison selection mode
+- ✨ Custom dropdown component
+- ✨ Full i18n support (homepage, editor, modals)
+- ✨ In-app auto update (check, download, install)
+
+**Improvements**
+- 🎨 Prompt card compression
+- 🎨 Multi-model compare button moved to right
+- 🎨 Improved README and screenshots
+- 🔧 Fixed macOS top bar drag issue
+- 🔧 Fixed language setting sync issue
+- 🔧 Fixed compare results persisting on prompt switch
+- 🔧 Removed macOS zip builds, DMG only
 
 ### v0.1.3 (2025-11-29)
 **New Features**

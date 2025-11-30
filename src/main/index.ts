@@ -5,6 +5,7 @@ import path from 'path';
 // import { registerAllIPC } from './ipc';
 import { createMenu } from './menu';
 import { registerShortcuts } from './shortcuts';
+import { initUpdater, registerUpdaterIPC } from './updater';
 
 // 禁用 GPU 加速（可选，某些系统上可能需要）
 // app.disableHardwareAcceleration();
@@ -49,6 +50,17 @@ async function createWindow() {
     }
   } else {
     await mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    // 生产环境禁止打开开发者工具
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+      // 禁止 F12、Ctrl+Shift+I、Cmd+Option+I
+      if (
+        input.key === 'F12' ||
+        (input.control && input.shift && input.key.toLowerCase() === 'i') ||
+        (input.meta && input.alt && input.key.toLowerCase() === 'i')
+      ) {
+        event.preventDefault();
+      }
+    });
   }
 
   // 处理外部链接
@@ -125,8 +137,16 @@ app.whenReady().then(async () => {
   // 注册快捷键
   registerShortcuts();
 
+  // 注册更新器 IPC
+  registerUpdaterIPC();
+
   // 创建窗口
   await createWindow();
+
+  // 初始化更新器（仅在生产环境）
+  if (!isDev && mainWindow) {
+    initUpdater(mainWindow);
+  }
 
   // macOS: 点击 dock 图标时重新创建窗口
   app.on('activate', async () => {

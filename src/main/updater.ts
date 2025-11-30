@@ -1,0 +1,134 @@
+// @ts-ignore - electron-updater types will be available after pnpm install
+import { autoUpdater } from 'electron-updater';
+import { BrowserWindow, ipcMain, app } from 'electron';
+
+// 类型定义
+interface UpdateInfo {
+  version: string;
+  releaseNotes?: string;
+  releaseDate?: string;
+}
+
+interface ProgressInfo {
+  percent: number;
+  bytesPerSecond: number;
+  total: number;
+  transferred: number;
+}
+
+// 禁用自动下载，让用户选择
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
+
+let mainWindow: BrowserWindow | null = null;
+
+export interface UpdateStatus {
+  status: 'checking' | 'available' | 'not-available' | 'downloading' | 'downloaded' | 'error';
+  info?: UpdateInfo;
+  progress?: ProgressInfo;
+  error?: string;
+}
+
+export function initUpdater(win: BrowserWindow) {
+  mainWindow = win;
+
+  // 检查更新出错
+  autoUpdater.on('error', (error) => {
+    console.error('Update error:', error);
+    sendStatusToWindow({
+      status: 'error',
+      error: error.message,
+    });
+  });
+
+  // 检查更新中
+  autoUpdater.on('checking-for-update', () => {
+    console.info('Checking for update...');
+    sendStatusToWindow({ status: 'checking' });
+  });
+
+  // 有可用更新
+  autoUpdater.on('update-available', (info: UpdateInfo) => {
+    console.info('Update available:', info.version);
+    sendStatusToWindow({
+      status: 'available',
+      info,
+    });
+  });
+
+  // 没有可用更新
+  autoUpdater.on('update-not-available', (info: UpdateInfo) => {
+    console.info('Update not available, current version is latest');
+    sendStatusToWindow({
+      status: 'not-available',
+      info,
+    });
+  });
+
+  // 下载进度
+  autoUpdater.on('download-progress', (progress: ProgressInfo) => {
+    console.info(`Download progress: ${progress.percent.toFixed(2)}%`);
+    sendStatusToWindow({
+      status: 'downloading',
+      progress,
+    });
+  });
+
+  // 下载完成
+  autoUpdater.on('update-downloaded', (info: UpdateInfo) => {
+    console.info('Update downloaded:', info.version);
+    sendStatusToWindow({
+      status: 'downloaded',
+      info,
+    });
+  });
+}
+
+function sendStatusToWindow(status: UpdateStatus) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('updater:status', status);
+  }
+}
+
+// 注册 IPC 处理程序
+export function registerUpdaterIPC() {
+  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+
+  // 获取当前版本 - 总是可用
+  ipcMain.handle('updater:version', () => {
+    return app.getVersion();
+  });
+
+  // 检查更新
+  ipcMain.handle('updater:check', async () => {
+    if (isDev) {
+      return { success: false, error: 'Update check disabled in development mode' };
+    }
+    try {
+      const result = await autoUpdater.checkForUpdates();
+      return { success: true, result };
+    } catch (error) {
+      return { success: false, error: (error as Error).message };
+    }
+  });
+
+  // 开始下载更新
+  ipcMain.handle('updater:download', async () => {
+    if (isDev) {
+      return { success: false, error: 'Download disabled in development mode' };
+    }
+    try {
+      await autoUpdater.downloadUpdate();
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: (error as Error).message };
+    }
+  });
+
+  // 安装更新并重启
+  ipcMain.handle('updater:install', async () => {
+    if (!isDev) {
+      autoUpdater.quitAndInstall(false, true);
+    }
+  });
+}

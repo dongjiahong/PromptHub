@@ -25,6 +25,10 @@ import {
   TrashIcon,
   StarIcon,
   EditIcon,
+  GithubIcon,
+  MailIcon,
+  HeartIcon,
+  ExternalLinkIcon,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { downloadBackup, restoreFromFile, clearDatabase } from '../../services/database';
@@ -33,6 +37,7 @@ import { testAIConnection, testImageGeneration, AITestResult, ImageTestResult } 
 import { useSettingsStore, MORANDI_THEMES, FONT_SIZES, ThemeMode } from '../../stores/settings.store';
 import { useToast } from '../ui/Toast';
 import { Select, SelectOption } from '../ui/Select';
+import { UpdateDialog } from '../UpdateDialog';
 
 interface SettingsPageProps {
   onBack: () => void;
@@ -106,6 +111,9 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
   const [showAddChatModel, setShowAddChatModel] = useState(false);
   const [showAddImageModel, setShowAddImageModel] = useState(false);
   const [editingModelId, setEditingModelId] = useState<string | null>(null);
+  
+  // 更新对话框状态
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [editingModelType, setEditingModelType] = useState<'chat' | 'image'>('chat');
   const [newModel, setNewModel] = useState({
     name: '',
@@ -120,7 +128,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
   const chatModels = settings.aiModels.filter(m => m.type === 'chat' || !m.type);
   const imageModels = settings.aiModels.filter(m => m.type === 'image');
 
-  // 测试单个模型
+  // 测试单个对话模型
   const handleTestModel = async (model: typeof settings.aiModels[0]) => {
     setTestingModelId(model.id);
     setAiTestResult(null);
@@ -139,6 +147,26 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
       showToast(`连接成功 (${result.latency}ms)`, 'success');
     } else {
       showToast(result.error || '连接失败', 'error');
+    }
+  };
+
+  // 测试单个生图模型
+  const handleTestImageModel = async (model: typeof settings.aiModels[0]) => {
+    setTestingModelId(model.id);
+    
+    const result = await testImageGeneration({
+      provider: model.provider,
+      apiKey: model.apiKey,
+      apiUrl: model.apiUrl,
+      model: model.model,
+    }, 'A simple blue circle on white background');
+    
+    setTestingModelId(null);
+    
+    if (result.success) {
+      showToast(`生图成功 (${result.latency}ms)`, 'success');
+    } else {
+      showToast(result.error || '生图失败', 'error');
     }
   };
 
@@ -835,6 +863,18 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                         </div>
                         <div className="flex items-center gap-1">
                           <button
+                            onClick={() => handleTestImageModel(model)}
+                            disabled={testingModelId === model.id}
+                            className="p-1.5 rounded hover:bg-muted transition-colors disabled:opacity-50"
+                            title="测试生图"
+                          >
+                            {testingModelId === model.id ? (
+                              <Loader2Icon className="w-4 h-4 text-primary animate-spin" />
+                            ) : (
+                              <PlayIcon className="w-4 h-4 text-muted-foreground" />
+                            )}
+                          </button>
+                          <button
                             onClick={() => {
                               setEditingModelId(model.id);
                               setEditingModelType('image');
@@ -1070,7 +1110,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                 <span className="text-white text-xl font-bold">P</span>
               </div>
               <h2 className="text-lg font-semibold">PromptHub</h2>
-              <p className="text-sm text-muted-foreground mt-1">{t('settings.version')} 0.1.4</p>
+              <p className="text-sm text-muted-foreground mt-1">{t('settings.version')} 0.1.5</p>
             </div>
 
             <SettingSection title={t('settings.projectInfo')}>
@@ -1090,9 +1130,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
               </SettingItem>
               <SettingItem label={t('settings.checkUpdate')} description={`${t('settings.version')}: 0.1.4`}>
                 <button
-                  onClick={() => {
-                    window.open('https://github.com/legeling/PromptHub/releases', '_blank');
-                  }}
+                  onClick={() => setShowUpdateDialog(true)}
                   className="h-8 px-4 rounded-lg bg-primary text-white text-sm hover:bg-primary/90 transition-colors"
                 >
                   {t('settings.checkUpdate')}
@@ -1113,8 +1151,45 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
               </SettingItem>
             </SettingSection>
 
-            <div className="px-4 py-3 text-sm text-muted-foreground text-center">
-              MIT License © 2025 PromptHub
+            <SettingSection title={t('settings.author')}>
+              <div className="px-4 py-3 space-y-3">
+                <a 
+                  href="https://github.com/legeling" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center">
+                    <GithubIcon className="w-4 h-4 text-foreground" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">@legeling</div>
+                    <div className="text-xs text-muted-foreground">GitHub</div>
+                  </div>
+                  <ExternalLinkIcon className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+                <a 
+                  href="mailto:legeling567@gmail.com"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <MailIcon className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">legeling567@gmail.com</div>
+                    <div className="text-xs text-muted-foreground">Email</div>
+                  </div>
+                </a>
+              </div>
+            </SettingSection>
+
+            <div className="px-4 py-4 text-sm text-muted-foreground text-center space-y-2">
+              <div className="flex items-center justify-center gap-1">
+                <span>Made with</span>
+                <HeartIcon className="w-4 h-4 text-red-500 fill-red-500" />
+                <span>by legeling</span>
+              </div>
+              <div>MIT License © 2025 PromptHub</div>
             </div>
           </div>
         );
@@ -1164,6 +1239,12 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
           {renderContent()}
         </div>
       </div>
+
+      {/* 更新对话框 */}
+      <UpdateDialog
+        isOpen={showUpdateDialog}
+        onClose={() => setShowUpdateDialog(false)}
+      />
     </div>
   );
 }

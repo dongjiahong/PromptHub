@@ -3,7 +3,7 @@ import { usePromptStore } from '../../stores/prompt.store';
 import { useFolderStore } from '../../stores/folder.store';
 import { useSettingsStore } from '../../stores/settings.store';
 import { StarIcon, CopyIcon, HistoryIcon, HashIcon, SparklesIcon, EditIcon, TrashIcon, CheckIcon, PlayIcon, LoaderIcon, XIcon, GitCompareIcon, ClockIcon } from 'lucide-react';
-import { EditPromptModal, VersionHistoryModal } from '../prompt';
+import { EditPromptModal, VersionHistoryModal, VariableInputModal } from '../prompt';
 import { useToast } from '../ui/Toast';
 import { chatCompletion, buildMessagesFromPrompt, multiModelCompare, AITestResult } from '../../services/ai';
 import { useTranslation } from 'react-i18next';
@@ -72,6 +72,7 @@ export function MainContent() {
   const [selectedModelIds, setSelectedModelIds] = useState<string[]>([]);
   const [compareResults, setCompareResults] = useState<AITestResult[] | null>(null);
   const [compareError, setCompareError] = useState<string | null>(null);
+  const [isVariableModalOpen, setIsVariableModalOpen] = useState(false);
   const { showToast } = useToast();
 
   // 切换 Prompt 时清除对比结果
@@ -371,13 +372,20 @@ export function MainContent() {
             <div className="flex items-center gap-3 flex-wrap">
               <button 
                 onClick={() => {
-                  const text = selectedPrompt.systemPrompt 
-                    ? `System: ${selectedPrompt.systemPrompt}\n\nUser: ${selectedPrompt.userPrompt}`
-                    : selectedPrompt.userPrompt;
-                  navigator.clipboard.writeText(text);
-                  setCopied(true);
-                  showToast('已复制到剪贴板', 'success');
-                  setTimeout(() => setCopied(false), 2000);
+                  // 检查是否有变量
+                  const variableRegex = /\{\{([^}]+)\}\}/g;
+                  const hasVariables = variableRegex.test(selectedPrompt.userPrompt) || 
+                    (selectedPrompt.systemPrompt && variableRegex.test(selectedPrompt.systemPrompt));
+                  
+                  if (hasVariables) {
+                    setIsVariableModalOpen(true);
+                  } else {
+                    const text = selectedPrompt.userPrompt;
+                    navigator.clipboard.writeText(text);
+                    setCopied(true);
+                    showToast(t('toast.copied'), 'success');
+                    setTimeout(() => setCopied(false), 2000);
+                  }
                 }}
                 className="
                   flex items-center gap-2 h-10 px-5 rounded-lg
@@ -513,6 +521,21 @@ export function MainContent() {
               onClose={() => setIsVersionModalOpen(false)}
               prompt={selectedPrompt}
               onRestore={handleRestoreVersion}
+            />
+
+            {/* 变量填充弹窗 */}
+            <VariableInputModal
+              isOpen={isVariableModalOpen}
+              onClose={() => setIsVariableModalOpen(false)}
+              promptId={selectedPrompt.id}
+              systemPrompt={selectedPrompt.systemPrompt}
+              userPrompt={selectedPrompt.userPrompt}
+              onCopy={() => {
+                setCopied(true);
+                showToast(t('toast.copied'), 'success');
+                setTimeout(() => setCopied(false), 2000);
+                setIsVariableModalOpen(false);
+              }}
             />
           </div>
         ) : (

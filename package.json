@@ -1,6 +1,6 @@
 {
   "name": "prompthub",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "一款开源、本地优先的 AI Prompt 管理工具，帮助你高效管理、版本控制和复用",
   "main": "out/main/index.js",
   "author": {
@@ -32,6 +32,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "electron-updater": "^6.6.2",
     "i18next": "^24.0.0",
     "react-i18next": "^15.0.0",
     "zustand": "^5.0.0"

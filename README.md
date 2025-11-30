@@ -1,20 +1,35 @@
 <div align="center">
-  <h1>PromptHub · AI Prompt 管理器</h1>
-  <p>一款开源、本地优先的 AI Prompt 管理工具，帮助你高效管理、版本控制和复用 Prompt。</p>
+  <img src="./docs/imgs/icon.png" alt="PromptHub Logo" width="120" height="120" />
+  <h1>PromptHub</h1>
+  <p><strong>🚀 开源、本地优先的 AI Prompt 管理器</strong></p>
+  <p>高效管理、版本控制、变量填充、多模型测试 — 一站式 Prompt 工作流</p>
+  
   <p>
-    <a href="https://github.com/legeling/PromptHub/stargazers"><img src="https://img.shields.io/github/stars/legeling/PromptHub?style=flat-square" alt="GitHub Stars"/></a>
+    <a href="https://github.com/legeling/PromptHub/stargazers"><img src="https://img.shields.io/github/stars/legeling/PromptHub?style=flat-square&color=yellow" alt="GitHub Stars"/></a>
     <a href="https://github.com/legeling/PromptHub/network/members"><img src="https://img.shields.io/github/forks/legeling/PromptHub?style=flat-square" alt="GitHub Forks"/></a>
+    <a href="https://github.com/legeling/PromptHub/releases"><img src="https://img.shields.io/github/v/release/legeling/PromptHub?style=flat-square&color=green" alt="Release"/></a>
+    <a href="https://github.com/legeling/PromptHub/releases"><img src="https://img.shields.io/github/downloads/legeling/PromptHub/total?style=flat-square&color=blue" alt="Downloads"/></a>
+    <img src="https://img.shields.io/github/license/legeling/PromptHub?style=flat-square" alt="License"/>
+  </p>
+  
+  <p>
     <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"/>
     <img src="https://img.shields.io/badge/Electron-33-47848F?style=flat-square&logo=electron&logoColor=white" alt="Electron"/>
     <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React"/>
-    <img src="https://img.shields.io/github/license/legeling/PromptHub?style=flat-square" alt="License"/>
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="TailwindCSS"/>
+  </p>
+  
+  <p>
+    <a href="./README.md">简体中文</a> ·
+    <a href="./docs/README.en.md">English</a>
   </p>
 </div>
 
-<p align="center">
-  <a href="./README.md">简体中文</a> ·
-  <a href="./docs/README.en.md">English</a>
-</p>
+<br/>
+
+> 💡 **为什么选择 PromptHub？**
+> 
+> 厌倦了在笔记本、文档和聊天记录中翻找 Prompt？PromptHub 让你像管理代码一样管理 Prompt — 版本控制、变量模板、多模型测试，一切都在本地，隐私无忧。
 
 ---
 
@@ -34,11 +49,20 @@
 ## 📸 截图
 
 <div align="center">
-  <p><strong>macOS</strong></p>
+  <p><strong>主界面</strong></p>
   <img src="./docs/imgs/image.png" width="80%" alt="macOS 主界面"/>
   <br/><br/>
-  <p><strong>Windows</strong></p>
-  <img src="./docs/imgs/windos_main.png" width="80%" alt="Windows 主界面"/>
+  <p><strong>主题设置</strong></p>
+  <img src="./docs/imgs/theme.png" width="80%" alt="主题设置"/>
+  <br/><br/>
+  <p><strong>数据备份</strong></p>
+  <img src="./docs/imgs/data.png" width="80%" alt="数据备份"/>
+  <br/><br/>
+  <p><strong>AI 模型配置</strong></p>
+  <img src="./docs/imgs/model.png" width="80%" alt="AI 模型配置"/>
+  <br/><br/>
+  <p><strong>版本对比</strong></p>
+  <img src="./docs/imgs/version-compare.png" width="80%" alt="版本对比"/>
 </div>
 
 ## 📦 安装
@@ -55,14 +79,21 @@
 
 ### macOS 首次启动
 
-由于应用未经过 Apple 签名，首次打开时可能会提示"无法打开"。请按以下步骤操作：
+由于应用未经过 Apple 公证签名，首次打开时可能会提示 **"PromptHub 已损坏，无法打开"** 或 **"无法验证开发者"**。
+
+**解决方法（推荐）**：打开终端，执行以下命令绕过公证检查：
 
 ```bash
-# 打开终端，输入以下命令：
 sudo xattr -rd com.apple.quarantine /Applications/PromptHub.app
 ```
 
-或者通过「系统偏好设置」→「安全性与隐私」→「通用」中点击「仍要打开」。
+> 💡 **提示**：如果应用安装在其他位置，请将路径替换为实际安装路径。
+
+**或者**：打开「系统设置」→「隐私与安全性」→ 向下滚动找到安全性部分 → 点击「仍要打开」。
+
+<div align="center">
+  <img src="./docs/imgs/install.png" width="60%" alt="macOS 安装提示"/>
+</div>
 
 ### 从源码构建
 
@@ -150,7 +181,7 @@ PromptHub/
 
 ## 🗺️ 路线图
 
-### v0.1.4 (当前)
+### v0.1.5 (当前)
 - [x] Prompt CRUD 管理
 - [x] 文件夹和标签系统
 - [x] 收藏功能
@@ -167,14 +198,24 @@ PromptHub/
 - [x] MAC 窗口拖动优化
 - [x] 自定义下拉选择框样式
 - [x] 全面国际化支持（主页、编辑器、弹窗）
+- [x] 应用内自动更新
+- [x] 变量填充界面
 
 ### 未来规划
-- [ ] 变量填充界面
 - [ ] Prompt 模板市场
 - [ ] 浏览器插件
-- [ ] 自动更新功能
 
 ## 📝 更新日志
+
+### v0.1.5 (2025-11-30)
+**新功能**
+- ✨ 变量填充界面（复制时自动检测变量，弹出填充界面）
+
+**优化**
+- 🎨 文件夹选择下拉框改用自定义样式组件
+- 🎨 编辑/新建 Prompt 弹窗加宽
+- 🔧 修复版本对比问题（当前版本加入版本列表）
+- 🔧 生产环境禁止打开开发者工具
 
 ### v0.1.4 (2025-11-30)
 **新功能**
@@ -182,13 +223,16 @@ PromptHub/
 - ✨ 多模型对比改为选择模式（从已配置模型中选择）
 - ✨ 自定义下拉选择框组件（优化原生样式）
 - ✨ 全面国际化支持（主页、编辑器、弹窗等全部适配多语言）
+- ✨ 应用内自动更新（检查、下载、安装一体化）
 
 **优化**
 - 🎨 Prompt 卡片压缩（移除时间和版本显示）
 - 🎨 多模型对比按钮移至右侧
+- 🎨 优化 README 文档和截图展示
 - 🔧 修复 MAC 顶部区域无法拖动窗口问题（整个顶部栏可拖动）
 - 🔧 修复语言设置显示不同步问题
 - 🔧 修复切换 Prompt 时对比结果残留问题
+- 🔧 移除 macOS zip 构建包，只保留 dmg
 
 ### v0.1.3 (2025-11-29)
 **新功能**

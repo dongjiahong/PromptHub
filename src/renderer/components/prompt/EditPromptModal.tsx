@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button, Input, Textarea } from '../ui';
-import { HashIcon, XIcon, FolderIcon } from 'lucide-react';
+import { Select } from '../ui/Select';
+import { HashIcon, XIcon } from 'lucide-react';
 import { usePromptStore } from '../../stores/prompt.store';
 import { useFolderStore } from '../../stores/folder.store';
 import { useTranslation } from 'react-i18next';
@@ -79,7 +80,7 @@ export function EditPromptModal({ isOpen, onClose, prompt }: EditPromptModalProp
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={t('prompt.editPrompt')} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={t('prompt.editPrompt')} size="xl">
       <div className="space-y-5">
         {/* 标题 */}
         <Input
@@ -102,21 +103,18 @@ export function EditPromptModal({ isOpen, onClose, prompt }: EditPromptModalProp
           <label className="block text-sm font-medium text-foreground">
             {t('prompt.folderOptional')}
           </label>
-          <div className="relative">
-            <FolderIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <select
-              value={folderId || ''}
-              onChange={(e) => setFolderId(e.target.value || undefined)}
-              className="w-full h-10 pl-10 pr-4 rounded-xl bg-muted/50 border-0 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-background transition-all duration-200 appearance-none cursor-pointer"
-            >
-              <option value="">{t('prompt.noFolder')}</option>
-              {folders.map((folder) => (
-                <option key={folder.id} value={folder.id}>
-                  {folder.icon || '📁'} {folder.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            value={folderId || ''}
+            onChange={(val) => setFolderId(val || undefined)}
+            placeholder={t('prompt.noFolder')}
+            options={[
+              { value: '', label: t('prompt.noFolder') },
+              ...folders.map((folder) => ({
+                value: folder.id,
+                label: `${folder.icon || '📁'} ${folder.name}`,
+              })),
+            ]}
+          />
         </div>
 
         {/* 标签 */}

@@ -16,12 +16,9 @@
       {
         "target": "dmg",
         "arch": ["x64", "arm64"]
-      },
-      {
-        "target": "zip",
-        "arch": ["x64", "arm64"]
       }
     ],
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
     "icon": "resources/icon.icns",
     "category": "public.app-category.productivity",
     "hardenedRuntime": true,
@@ -34,6 +31,7 @@
         "arch": ["x64"]
       }
     ],
+    "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
     "icon": "resources/icon.ico"
   },
   "linux": {

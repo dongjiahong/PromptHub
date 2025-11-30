@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Modal, Button, Input, Textarea } from '../ui';
+import { Select } from '../ui/Select';
 import { HashIcon, XIcon, FolderIcon } from 'lucide-react';
 import { useFolderStore } from '../../stores/folder.store';
 import { usePromptStore } from '../../stores/prompt.store';
@@ -75,7 +76,7 @@ export function CreatePromptModal({ isOpen, onClose, onCreate }: CreatePromptMod
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={t('prompt.createPrompt')} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={t('prompt.createPrompt')} size="xl">
       <div className="space-y-5">
         {/* 标题 */}
         <Input
@@ -98,18 +99,18 @@ export function CreatePromptModal({ isOpen, onClose, onCreate }: CreatePromptMod
           <label className="block text-sm font-medium text-foreground">
             {t('prompt.folderOptional')}
           </label>
-          <select
+          <Select
             value={folderId}
-            onChange={(e) => setFolderId(e.target.value)}
-            className="w-full h-10 px-4 rounded-xl bg-muted/50 border-0 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-background transition-all duration-200"
-          >
-            <option value="">{t('prompt.noFolder')}</option>
-            {folders.map((folder) => (
-              <option key={folder.id} value={folder.id}>
-                {folder.icon} {folder.name}
-              </option>
-            ))}
-          </select>
+            onChange={setFolderId}
+            placeholder={t('prompt.noFolder')}
+            options={[
+              { value: '', label: t('prompt.noFolder') },
+              ...folders.map((folder) => ({
+                value: folder.id,
+                label: `${folder.icon || '📁'} ${folder.name}`,
+              })),
+            ]}
+          />
         </div>
 
         {/* 标签 */}

@@ -88,6 +88,19 @@ contextBridge.exposeInMainWorld('electron', {
   setAutoLaunch: (enabled: boolean) => ipcRenderer.send('app:setAutoLaunch', enabled),
   selectFolder: () => ipcRenderer.invoke('dialog:selectFolder'),
   showNotification: (title: string, body: string) => ipcRenderer.invoke('notification:show', { title, body }),
+  // 更新器
+  updater: {
+    check: () => ipcRenderer.invoke('updater:check'),
+    download: () => ipcRenderer.invoke('updater:download'),
+    install: () => ipcRenderer.invoke('updater:install'),
+    getVersion: () => ipcRenderer.invoke('updater:version'),
+    onStatus: (callback: (status: any) => void) => {
+      ipcRenderer.on('updater:status', (_event, status) => callback(status));
+    },
+    offStatus: () => {
+      ipcRenderer.removeAllListeners('updater:status');
+    },
+  },
 });
 
 // 类型声明
@@ -103,6 +116,14 @@ declare global {
       setAutoLaunch?: (enabled: boolean) => void;
       selectFolder?: () => Promise<string | null>;
       showNotification?: (title: string, body: string) => Promise<boolean>;
+      updater?: {
+        check: () => Promise<{ success: boolean; result?: any; error?: string }>;
+        download: () => Promise<{ success: boolean; error?: string }>;
+        install: () => Promise<void>;
+        getVersion: () => Promise<string>;
+        onStatus: (callback: (status: any) => void) => void;
+        offStatus: () => void;
+      };
     };
   }
 }
